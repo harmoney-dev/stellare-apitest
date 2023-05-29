@@ -7,6 +7,11 @@
       "skipLibCheck": true,
       "forceConsistentCasingInFileNames": true
     },
-    "include": ["./src/**/*.ts", "./features/**/*.ts"]
+    "include": [
+      "./src/**/*.ts",
+      "./features/**/*.ts",
+      "config/*.ts",
+      "config/endpoints/*.ts"
+    ]
   }
   
