@@ -1,17 +1,26 @@
-import { Given, When, Then } from '@cucumber/cucumber';
+import { When, Then } from '@cucumber/cucumber';
 import { expect } from 'chai';
 import supertest from 'supertest';
 
-const request = supertest('');
+const s2Request = supertest('https://harmonize.harmoneylabs.com');
 
-Given('I am a user', function () {
-  // No action needed for this step
+
+When('I create a new user', async function() {
+    const response = await s2Request
+        .post('/api/users')
+        .set('Authorization', `Bearer ${this.accessToken}`)
+        .send({});
+
+    this.statusCode = response.status;
 });
 
-When('I send a GET request to {string}', async function (url: string) {
-  this.response = await request.get(url);
-});
+When('I update the preferred name of the user', async function() {
+    const response = await s2Request
+        .patch('/api/users')
+        .set('Authorization', `Bearer ${this.accessToken}`)
+        .send({
+            preferredName: "Shawn",
+        });
 
-Then('I should receive a {int} status code', function (statusCode: number) {
-  expect(this.response.status).to.equal(statusCode);
+    this.statusCode = response.status;
 });

@@ -1,6 +1,10 @@
-Feature: Test API call to https://stellare.harmoneylabs.com/
+Feature: Stellare Life Cycle
+  As a user
+  I want to login and update my preferred name
+  So that my user profile is updated
 
-  Scenario: Send a GET request to the API
-    Given I am a user
-    When I send a GET request to "https://stellare.harmoneylabs.com/"
-    Then I should receive a 200 status code
+  Scenario: User login and updates preferred name
+    When I create a new user
+    Then I should receive a status code of 201
+    When I update the preferred name of the user
+    Then I should receive a status code of 200
