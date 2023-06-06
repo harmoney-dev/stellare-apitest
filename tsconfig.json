@@ -11,7 +11,9 @@
       "./src/**/*.ts",
       "./features/**/*.ts",
       "config/*.ts",
-      "config/endpoints/*.ts"
+      "config/endpoints/*.ts",
+      "support/**/*.ts",
+      "support/*.ts"
     ]
   }
   

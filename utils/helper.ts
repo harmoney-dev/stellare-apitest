@@ -1,3 +1,7 @@
-/*
-*  functions for making HTTP requests using SuperTest, handling authentication, or extracting data from API responses
-* */
+export class helper {
+    public static delay(milliseconds: any){
+        return new Promise(resolve => {
+            setTimeout(resolve, milliseconds);
+        });
+    }
+}
