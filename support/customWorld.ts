@@ -14,6 +14,8 @@ class CustomWorld {
     applicationId: string;
     servers: {[key: string]: string}
     feature: messages.Pickle;
+    currentTaskName: string;
+    currentTaskId: string;
 
     constructor() {
         this.accessToken = "";
@@ -27,6 +29,8 @@ class CustomWorld {
         this.applicationId = '';
         this.servers = {};
         this.feature = new Pickle();
+        this.currentTaskName = '';
+        this.currentTaskId = '';
     }
 }
 

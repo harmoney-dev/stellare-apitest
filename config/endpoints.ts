@@ -7,7 +7,8 @@ export const endpoints = {
     },
     stellare: {
         users: '/api/users',
-        product: '/api/product',
+        product: '/api/loan-products',
+        processes: '/api/processes',
         userInstance: '/api/user-instances',
         currentTask: '/api/tasks/current-task',
         tasks: '/api/tasks/'
