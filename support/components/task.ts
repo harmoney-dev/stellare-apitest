@@ -5,15 +5,17 @@ export class task {
     public static async kickoffJourney(stellare: any, userId: string, token: string) {
         const product = await stellare.get(endpoints.stellare.product).set('Authorization', 'Bearer ' + token).send({branch: 'AU'}).expect(200);
         let processId = '';
-        product.body.forEach((process: { [key: string]: string }) => {
-            if (process.name === 'Quick quote') {
-                processId = process.processId;
+        let productId = '';
+        product.body.forEach((p: { [key: string]: string }) => {
+            if (p.name === 'Quick quote') {
+                processId = p.processId;
+                productId = p.id;
             }
         });
 
         const res = await stellare.get(endpoints.stellare.processes + '/' + processId).expect(200);
         const journeyId = res.body.id;
-        const userInstanceBody = {userId: userId, processId: processId};
+        const userInstanceBody = {userId: userId, productId: productId};
         await stellare.post(endpoints.stellare.userInstance).send(userInstanceBody).expect(201);
 
         return journeyId;

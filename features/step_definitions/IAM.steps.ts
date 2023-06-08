@@ -13,6 +13,7 @@ When('I sign up with email {string}', async function (email: string) {
     const timeStamp = Date.now();
     email = email.replace('@', `+${timeStamp}@`);
     await User.createUser(this.servers.iam, email, this.adminToken);
+    console.log('new user email ' + email)
     this.userToken = await User.getUserToken(this.servers.iam, email)
     this.email = email;
 });

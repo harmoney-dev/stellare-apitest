@@ -42,7 +42,6 @@ export class User {
         }
         const res = await iam.post(endpoints.iam.userToken).set('Content-Type', 'application/x-www-form-urlencoded')
             .send(userTokenBody).expect(200);
-        console.log('new user email ' + email)
         return res.body.access_token;
     }
 
