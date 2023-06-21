@@ -1,35 +1,60 @@
+import {Helper} from "../../utils/helper";
 import {endpoints} from "../../config";
-import {helper} from "../../utils/helper";
+import supertest from "supertest";
 
-export class task {
-    public static async kickoffJourney(stellare: any, userId: string, token: string) {
-        const product = await stellare.get(endpoints.stellare.product).set('Authorization', 'Bearer ' + token).send({branch: 'AU'}).expect(200);
+export class Task {
+
+    private stellare: supertest.SuperTest<supertest.Test>
+    private _token: string = '';
+
+
+    constructor(stellare: supertest.SuperTest<supertest.Test>, token: string) {
+        this.stellare = stellare;
+        this._token = token;
+    }
+
+    private async getTask(path: string, status: number = 200, body?: any) {
+        return this.stellare.get(path).set('Authorization', 'Bearer ' + this._token).send(body).expect(status);
+    }
+
+    private async postTask(path: string, status: number = 201, body?: any) {
+        return this.stellare.post(path).set('Authorization', 'Bearer ' + this._token).send(body).expect(status);
+    }
+
+    public async kickoffJourney(userId: string) {
+        const product = await this.getTask(endpoints.stellare.product, 200, {branch: 'AU'})
+        // const product = await stellare.get(endpoints.stellare.product).set('Authorization', 'Bearer ' + token).send({branch: 'AU'}).expect(200);
         let processId = '';
         let productId = '';
         product.body.forEach((p: { [key: string]: string }) => {
-            if (p.name === 'Quick quote') {
+            if (p.name.toLowerCase() === 'quote') {
                 processId = p.processId;
                 productId = p.id;
             }
         });
-
-        const res = await stellare.get(endpoints.stellare.processes + '/' + processId).expect(200);
+        const res = await this.getTask(Helper.formatEndpoint(endpoints.stellare.processes, { processId: processId }))
+        // const res = await stellare.get(Helper.formatEndpoint(endpoints.stellare.processes, { processId: processId })).expect(200);
         const journeyId = res.body.id;
         const userInstanceBody = {userId: userId, productId: productId};
-        await stellare.post(endpoints.stellare.userInstance).send(userInstanceBody).expect(201);
+        await this.postTask(endpoints.stellare.userInstance, 201, userInstanceBody);
+        // await stellare.post(endpoints.stellare.userInstance).send(userInstanceBody).expect(201);
 
-        return journeyId;
+        return { journeyId: journeyId, productId: productId };
     }
 
+    public async getTaskVariable(taskId: string) {
+        return this.getTask(Helper.formatEndpoint(endpoints.stellare.taskVariables, {taskId: taskId}));
+        // return await stellare.get(Helper.formatEndpoint(endpoints.stellare.taskVariables, { taskId: taskId })).expect(200);
+    }
 
-    static async waitTaskActive(stellare: any, userId: string, journeyId: any) {
-        let res = await task.getCurrentTask(stellare, userId, journeyId);
+    public async waitTaskActive(userId: string, journeyId: any) {
+        let res = await this.getCurrentTask(userId, journeyId);
         let status = res.status;
         for (let i = 0; i < 60; i++) {
             if (status == 404) {
-                res = await task.getCurrentTask(stellare, userId, journeyId);
+                res = await this.getCurrentTask( userId, journeyId);
                 status = res.status;
-                await helper.delay(1000);
+                await Helper.delay(1000);
             } else {
                 break;
             }
@@ -38,12 +63,16 @@ export class task {
         return res;
     }
 
-    static async completeTask(stellare: any, taskId: string, token: string, variables: string) {
-        return await stellare.patch(endpoints.stellare.tasks + taskId)
-            .set('Authorization', 'Bearer ' + token).send({variables:variables}).expect(200);
+    public async completeTask(taskId: string, token: string, variables: any) {
+        return this.stellare.patch(Helper.formatEndpoint(endpoints.stellare.tasks, {taskId: taskId}))
+            .set('Authorization', 'Bearer ' + token).send(variables).expect(200);
     }
 
-    static async getCurrentTask(stellare: any, userId: string, journeyId: any) {
-        return await stellare.get(endpoints.stellare.currentTask).query({userId: userId, journeyId: journeyId});
+    public async getCurrentTask(userId: string, journeyId: any) {
+        return this.queryTask(endpoints.stellare.currentTask,  {userId: userId, journeyId: journeyId});
+    }
+
+    private async queryTask(path: string, query?: any) {
+        return this.stellare.get(path).query(query);
     }
 }
