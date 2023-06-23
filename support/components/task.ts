@@ -23,7 +23,6 @@ export class Task {
 
     public async kickoffJourney(userId: string) {
         const product = await this.getTask(endpoints.stellare.product, 200, {branch: 'AU'})
-        // const product = await stellare.get(endpoints.stellare.product).set('Authorization', 'Bearer ' + token).send({branch: 'AU'}).expect(200);
         let processId = '';
         let productId = '';
         product.body.forEach((p: { [key: string]: string }) => {
@@ -33,18 +32,15 @@ export class Task {
             }
         });
         const res = await this.getTask(Helper.formatEndpoint(endpoints.stellare.processes, { processId: processId }))
-        // const res = await stellare.get(Helper.formatEndpoint(endpoints.stellare.processes, { processId: processId })).expect(200);
         const journeyId = res.body.id;
         const userInstanceBody = {userId: userId, productId: productId};
         await this.postTask(endpoints.stellare.userInstance, 201, userInstanceBody);
-        // await stellare.post(endpoints.stellare.userInstance).send(userInstanceBody).expect(201);
 
         return { journeyId: journeyId, productId: productId };
     }
 
     public async getTaskVariable(taskId: string) {
         return this.getTask(Helper.formatEndpoint(endpoints.stellare.taskVariables, {taskId: taskId}));
-        // return await stellare.get(Helper.formatEndpoint(endpoints.stellare.taskVariables, { taskId: taskId })).expect(200);
     }
 
     public async waitTaskActive(userId: string, journeyId: any) {
