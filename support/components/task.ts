@@ -69,6 +69,6 @@ export class Task {
     }
 
     private async queryTask(path: string, query?: any) {
-        return this.stellare.get(path).query(query);
+        return this.stellare.get(path).set('Authorization', 'Bearer ' + this._token).query(query);
     }
 }

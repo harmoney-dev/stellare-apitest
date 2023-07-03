@@ -9,7 +9,7 @@ export class Debt {
             liabilities: [] as any
         };
 
-        for (let i = 1; i < dataMap.length; i++) {
+        for (let i = 0; i < dataMap.length; i++) {
             const values = dataMap[i];
             let debt: any;
             if (values['repaymentAmount']) {
@@ -32,9 +32,9 @@ export class Debt {
             provider: data['provider'],
             otherProvider: '',
         }
-        if (data['paysOutstandingBalance']) payload.paysOutstandingBalance = data['paysOutstandingBalance'];
+        if (data['creditLimit']) payload.paysOutstandingBalance = data['creditLimit'];
         if (data['outstandingBalance']) payload.outstandingBalance = parseInt(data['outstandingBalance']);
-        if (data['isMortgageShared']) payload.isMortgageShared = data['isMortgageShared'];
+        if (data['isMortgageShared']) payload.isMortgageShared = data['isMortgageShared'] === 'true';
 
         return payload;
     }

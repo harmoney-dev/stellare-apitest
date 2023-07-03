@@ -34,7 +34,7 @@ export class Income {
         keys.forEach((key: any, index: any) => {
             let income: any;
             let networth = NetworthSource.getKeyId(key);
-            if ( networth && values[index]) {
+            if (networth && values[index]) {
                 income = this.getIncome(networth, values[index]);
                 body.incomes.push(income)
             }
@@ -55,6 +55,10 @@ export class Income {
             case NetworthSource.keyIdMap['INCOME_SALARY_WAGES_ID']:
                 payload.employmentType = info.replaceAll(' ', '_');
                 payload.seasonalWorkingMonths = '';
+                payload.employmentCode = "professional";
+                payload.employmentStartDate = "2004-12-31T11:00:00.000Z";
+                payload.startEmploymentMonth = "01";
+                payload.startEmploymentYear = "2005";
                 break;
             case NetworthSource.keyIdMap['INCOME_BENEFIT_ID']:
                 payload.benefitType = info;

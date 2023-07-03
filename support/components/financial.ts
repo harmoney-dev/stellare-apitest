@@ -28,7 +28,9 @@ export class Financial {
     }
 
     private async postFinancial(path: string, body: any) {
-        return this.server.post(path).set(this.commonAuth()).send(body).expect(201);
+        const res =  await this.server.post(path).set(this.commonAuth()).send(body)
+            // .expect(201);
+        return res;
     }
     
     

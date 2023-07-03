@@ -5,7 +5,8 @@
   },
   "dependencies": {
     "@cucumber/cucumber": "8.10.0",
-    "@cucumber/messages": "^21.0.0"
+    "@cucumber/messages": "^21.0.0",
+    "base64url": "^3.0.1"
   },
   "devDependencies": {
     "@faker-js/faker": "^8.0.2",

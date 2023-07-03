@@ -76,7 +76,7 @@ export class IDV {
     }
 
     private async f1Get(path: string, query?: any) {
-        const headers = {'Authorization': this.f1Token, 'Referer': 'https://stellare.harmoneylabs.com/'};
+        const headers = {'Authorization': this.f1Token, 'Referer': 'https://secure.harmoneylabs.com/'};
         return this.server.get(path)
             .set(headers)
             .query(query)
@@ -84,7 +84,7 @@ export class IDV {
     }
 
     private async f1Post(path: string, body?: any, status: number = 201) {
-        const headers = {'Authorization': this.f1Token, 'Referer': 'https://stellare.harmoneylabs.com/'};
+        const headers = {'Authorization': this.f1Token, 'Referer': 'https://secure.harmoneylabs.com/'};
         return this.server.post(path)
             .set(headers)
             .send(body)

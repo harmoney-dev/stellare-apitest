@@ -18,7 +18,7 @@ When('I start the user task idv-welcome', async function () {
     await idv.initSmartUI(f1SessionId, customerId, events, initBody);
 });
 
-When('I submit the user task idv-frankie-smart-ui with details', async function (idvForm: DataTable) {
+When('I submit the IDV user info with details', async function (idvForm: DataTable) {
     const body = await IdvApplicant.getApplicantPayload(idv, this.userId, idvForm);
     this.response = await idv.submitApplicant(body);
     await idv.getApplicant(this.response.body.entityId, this.response.header.token);

@@ -1,9 +1,10 @@
 export const endpoints = {
-    iam: {
+    auth0: {
+        login: '/u/login',
+        authorize: '/authorize',
+        signUp: '/u/signup',
         users: '/api/users',
-        userToken: '/realms/customer/protocol/openid-connect/token',
-        adminToken: '/realms/master/protocol/openid-connect/token',
-        adminUsers: '/admin/realms/customer/users',
+        authToken: '/oauth/token',
     },
     stellare: {
         users: '/api/users',

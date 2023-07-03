@@ -15,7 +15,7 @@ let user: User;
 let loanProduct: LoanProduct;
 let loanApplication: LoanApplication;
 
-When('I complete user task username with name {string}', async function (name: string) {
+When('I submit username with name {string}', async function (name: string) {
     task = new Task(this!.servers.stellare, this!.userToken);
     user = new User(this!.servers.stellare, this!.userToken);
     const journey = await task.kickoffJourney(this.userId);
@@ -27,7 +27,7 @@ When('I complete user task username with name {string}', async function (name: s
     this.response = await user.saveUsername(name == 'faker' ? faker.person.firstName() : name);
 });
 
-When('I complete user task loan-amount with following details', async function(dataTable: DataTable) {
+When('I submit loan amount with following details', async function(dataTable: DataTable) {
     const loanData = dataTable.hashes()[0];
     const amount = loanData['amount'];
     let residencyStatus = loanData['residencyStatus'];
@@ -42,7 +42,7 @@ When('I complete user task loan-amount with following details', async function(d
     this.response = await user.saveLoanAmount(body);
 });
 
-When('I submit user task loan-purpose with purpose {string}', async function(purpose: string) {
+When('I submit loan purpose with purpose {string}', async function(purpose: string) {
     loanProduct = new LoanProduct(this!.servers.stellare, this!.userToken);
     loanApplication = new LoanApplication(this!.servers.stellare, this!.userToken);
     if (purpose === '' || purpose.toLowerCase() === 'random') {
@@ -65,7 +65,7 @@ When('I submit user task loan-purpose with purpose {string}', async function(pur
     this.response = await loanApplication.submitLoanPurpose(this.applicationId, body);
 });
 
-Then('The task completed successfully', async function () {
+Then('The user task {string} completed successfully', async function (taskName: string) {
     expect(this.response.status).to.be.oneOf([200, 201]);
     if (this.response.body.success) {
         expect(this.response.body.success).equal(true);
