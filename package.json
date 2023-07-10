@@ -1,12 +1,15 @@
 {
   "scripts": {
-    "test": "cucumber-js"
+    "test": "cucumber-js",
+    "e2e:test": "cucumber-js --retry 2 --tags @e2e"
   },
   "dependencies": {
     "@cucumber/cucumber": "8.10.0",
-    "@cucumber/messages": "^21.0.0"
+    "@cucumber/messages": "^21.0.0",
+    "base64url": "^3.0.1"
   },
   "devDependencies": {
+    "@faker-js/faker": "^8.0.2",
     "@types/chai": "^4.3.5",
     "@types/supertest": "^2.0.12",
     "chai": "^4.3.7",

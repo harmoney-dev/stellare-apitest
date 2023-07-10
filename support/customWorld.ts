@@ -16,6 +16,7 @@ class CustomWorld {
     feature: messages.Pickle;
     currentTaskName: string;
     currentTaskId: string;
+    startTime: Date;
 
     constructor() {
         this.accessToken = "";
@@ -31,6 +32,7 @@ class CustomWorld {
         this.feature = new Pickle();
         this.currentTaskName = '';
         this.currentTaskId = '';
+        this.startTime = new Date();
     }
 }
 

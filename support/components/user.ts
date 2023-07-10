@@ -1,62 +1,52 @@
 import {endpoints} from "../../config";
+import {Helper} from "../../utils/helper";
+import supertest from "supertest";
+
 
 export class User {
-    public static async iamAdmin(iam: any) {
-        const userTokenBody = {
-            grant_type: 'password',
-            username: 'admin',
-            password: process.env.iamAdminPassword,
-            client_id: 'admin-cli',
-            scope: 'openid'
-        }
 
-        return await iam.post(endpoints.iam.adminToken)
-            .set('Content-Type', 'application/x-www-form-urlencoded')
-            .send(userTokenBody).expect(200);
+    private stellare: supertest.SuperTest<supertest.Test>;
+    private _userToken: string = '';
+
+    constructor(stellare: supertest.SuperTest<supertest.Test>, userToken: string) {
+        this.stellare = stellare;
+        this._userToken = userToken;
     }
 
-    public static async createUser(iam: any, email: string, adminToken: string) {
-        const body = {
-            email: `${email}`,
-            enabled: true,
-            credentials: [
-                {
-                    type: "password",
-                    value: "Stellare123.",
-                    temporary: false
-                }
-            ]
-        };
-
-        const response = await iam.post(endpoints.iam.adminUsers).set('Authorization', 'Bearer ' + adminToken).send(body).expect(201);
-        return response.status;
+    public async postUser(path: string, body?: any) {
+        return this.stellare.post(path).set('Authorization', 'Bearer ' + this._userToken).send(body).expect(201);
     }
 
-    public static async getUserToken(iam: any, email: string) {
-        const userTokenBody = {
-            grant_type: 'password',
-            username: `${email}`,
-            password: 'Stellare123.',
-            client_id: 'stellare-nz',
-            scope: 'openid'
-        }
-        const res = await iam.post(endpoints.iam.userToken).set('Content-Type', 'application/x-www-form-urlencoded')
-            .send(userTokenBody).expect(200);
-        return res.body.access_token;
+    public async patchUser(path: string, body?: any) {
+        return this.stellare.patch(path).set('Authorization', 'Bearer ' + this._userToken).send(body).expect(200);
     }
 
-    public static async postUser(stellare: any, token: string) {
-        return await stellare.post(endpoints.stellare.users).set('Authorization', 'Bearer ' + token).expect(201);
+    public async getUser(path: string, body?: any) {
+        return this.stellare.get(path).set('Authorization', 'Bearer ' + this._userToken).send(body).expect(200);
     }
 
-    public static async patchUser(stellare: any, token: string, patchBody: { [key: string]: string }) {
-        return await stellare.patch(endpoints.stellare.users).set('Content-Type', 'application/json')
-            .set('Authorization', `Bearer ${token}`)
-            .send(patchBody).expect(200);
+    public async putUser(path: string, body?: any) {
+        return this.stellare.put(path).set('Authorization', 'Bearer ' + this._userToken).send(body).expect(200);
     }
 
-    public static async saveUsername(stellare: any, token: string, userName: string) {
+    public async saveUsername(userName: string) {
         const patchBody = {preferredName: userName};
-        return await User.patchUser(stellare, token, patchBody);
+        return this.patchUser(endpoints.stellare.users, patchBody);
+    }
+
+    public async saveLoanAmount(body: any) {
+        return this.patchUser(endpoints.stellare.application, body);
+    }
+
+    public async getUserProfile(userId: string) {
+        return this.getUser(Helper.formatEndpoint(endpoints.stellare.userProfile, {userId: userId}));
+    }
+
+    public async updateUserProfile(userId: string, body: any) {
+        return this.putUser(Helper.formatEndpoint(endpoints.stellare.userProfile, {userId: userId}), body);
+    }
+
+    public async updateUserAddress(body: any) {
+        return this.putUser(Helper.formatEndpoint(endpoints.stellare.address, {address: body.addressId}), body);
     }
 }
