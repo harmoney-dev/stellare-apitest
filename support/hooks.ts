@@ -16,6 +16,7 @@ After(function() {
     const minutes = Math.floor(durationInMilliseconds / 60000); // 1 minute = 60,000 milliseconds
     const seconds = Math.floor((durationInMilliseconds % 60000) / 1000);
     console.log(`Duration: ${minutes} minutes, ${seconds} seconds`);
+    console.log('------------------------------------------------', '\n')
 })
 
 AfterStep(async function (testCase) {

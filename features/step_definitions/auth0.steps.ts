@@ -28,11 +28,26 @@ When('I sign up with email {string}', async function (email: string) {
     this.email = email;
 });
 
+When('I sign in with email {string} and password {string}', async function (email: string, password: string) {
+    auth0 = new Auth0(this.servers.auth0);
+    this.email = email;
+    this.userToken = await auth0.signIn(email, password);
+});
+
 Then('user sign up success', async function () {
-    const user = new User(this.servers.stellare, this.userToken);
+    this.userId = await postUserAfterAuth0(this.servers.stellare, this.userToken, this.email);
+    console.log('userId ' + this.userId)
+});
+
+Then('user sign in success', async function () {
+    this.userId = await postUserAfterAuth0(this.servers.stellare, this.userToken, this.email);
+    console.log('userId ' + this.userId)
+});
+
+async function postUserAfterAuth0(stellare: supertest.SuperTest<supertest.Test>, userToken: string, email: string) {
+    const user = new User(stellare, userToken);
     const res = await user.postUser(endpoints.stellare.users);
     expect(res.body.id).not.equal('');
-    this.userId = res.body.id;
-    console.log('userId ' + this.userId)
-    expect(res.body.email).equal(this.email);
-});
+    expect(res.body.email).equal(email);
+    return res.body.id;
+}
