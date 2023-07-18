@@ -47,6 +47,6 @@ export class User {
     }
 
     public async updateUserAddress(body: any) {
-        return this.putUser(Helper.formatEndpoint(endpoints.stellare.address, {address: body.addressId}), body);
+        return this.putUser(Helper.formatEndpoint(endpoints.stellare.address, {address: body.id}), body);
     }
 }

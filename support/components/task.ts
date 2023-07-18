@@ -25,12 +25,18 @@ export class Task {
         const product = await this.getTask(endpoints.stellare.product, 200, {branch: 'AU'})
         let processId = '';
         let productId = '';
-        product.body.forEach((p: { [key: string]: string }) => {
-            if (p.name.toLowerCase() === 'quote') {
-                processId = p.processId;
-                productId = p.id;
-            }
-        });
+
+        if (product.body.length === 1) {
+            processId = product.body[0].processId;
+            productId = product.body[0].id;
+        } else {
+            product.body.forEach((p: { [key: string]: string }) => {
+                if (p.name.toLowerCase() === 'personal loan') {
+                    processId = p.processId;
+                    productId = p.id;
+                }
+            });
+        }
         const res = await this.getTask(Helper.formatEndpoint(endpoints.stellare.processes, { processId: processId }))
         const journeyId = res.body.id;
         const userInstanceBody = {userId: userId, productId: productId};
