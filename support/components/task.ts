@@ -22,7 +22,7 @@ export class Task {
     }
 
     public async kickoffJourney(userId: string) {
-        const product = await this.getTask(endpoints.stellare.product, 200, {branch: 'AU'})
+        const product = await this.queryTask(endpoints.stellare.product, {branch: 'AU'})
         let processId = '';
         let productId = '';
 

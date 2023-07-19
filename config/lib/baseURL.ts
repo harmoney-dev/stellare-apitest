@@ -8,13 +8,13 @@ export interface baseURL {
 export default {
     prod: {
         nz: {
-            stellare: 'https://harmonize.harmoneylabs.com',
+            stellare: 'https://api.harmoneylabs.com',
             auth0: 'https://harmoney-iam-staging.au.auth0.com',
             frankieOne: 'https://backend.demo.frankiefinancial.io',
             proviso: 'https://apitest.bankfeeds.com.au'
         },
         au: {
-            stellare: 'https://harmonize.harmoneylabs.com',
+            stellare: 'https://api.harmoneylabs.com',
             auth0: 'https://harmoney-iam-staging.au.auth0.com',
             frankieOne: 'https://backend.demo.frankiefinancial.io',
             proviso: 'https://apitest.bankfeeds.com.au'
@@ -22,13 +22,13 @@ export default {
     },
     preprod: {
         nz: {
-            stellare: 'https://harmonize.harmoneylabs.com',
+            stellare: 'https://api.harmoneylabs.com',
             auth0: 'https://harmoney-iam-staging.au.auth0.com',
             frankieOne: 'https://backend.demo.frankiefinancial.io',
             proviso: 'https://apitest.bankfeeds.com.au'
         },
         au: {
-            stellare: 'https://harmonize.harmoneylabs.com',
+            stellare: 'https://api.harmoneylabs.com',
             auth0: 'https://harmoney-iam-staging.au.auth0.com',
             frankieOne: 'https://backend.demo.frankiefinancial.io',
             proviso: 'https://apitest.bankfeeds.com.au'
@@ -36,13 +36,13 @@ export default {
     },
     qa: {
         nz: {
-            stellare: 'https://harmonize.harmoneylabs.com',
+            stellare: 'https://api.harmoneylabs.com',
             auth0: 'https://harmoney-iam-staging.au.auth0.com',
             frankieOne: 'https://backend.demo.frankiefinancial.io',
             proviso: 'https://apitest.bankfeeds.com.au'
         },
         au: {
-            stellare: 'https://harmonize.harmoneylabs.com',
+            stellare: 'https://api.harmoneylabs.com',
             auth0: 'https://harmoney-iam-staging.au.auth0.com',
             frankieOne: 'https://backend.demo.frankiefinancial.io',
             proviso: 'https://apitest.bankfeeds.com.au'
