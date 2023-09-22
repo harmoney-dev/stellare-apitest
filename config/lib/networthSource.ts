@@ -11,6 +11,7 @@ export class NetworthSource {
         INCOME_OTHER_ID: 4,
         INCOME_NO_ID: 15,
         INCOME_CHANGE_ID: 37,
+        INCOME_PARTNER_ID: 44,
         EXPENSE_RENT_ID: 31,
         EXPENSE_CHILD_SUPPORT_ID: 33,
         EXPENSE_SCHOOL_FEES_ID: 34,

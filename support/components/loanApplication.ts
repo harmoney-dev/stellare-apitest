@@ -1,21 +1,45 @@
 import {Helper} from "../../utils/helper";
 import {endpoints} from "../../config";
 import supertest from "supertest";
+import {Server} from "./server";
 
-export class LoanApplication {
-    private stellare: supertest.SuperTest<supertest.Test>;
-    private _userToken: string = '';
+export class LoanApplication extends Server{
+    private _loanApplicationId: string = '';
 
-    constructor(stellare: supertest.SuperTest<supertest.Test>, userToken: string) {
-        this.stellare = stellare;
-        this._userToken = userToken;
+    constructor(stellare: supertest.SuperTest<supertest.Test>, userToken: string, loanApplicationId: string) {
+        super(stellare, userToken);
+        this._loanApplicationId = loanApplicationId;
     }
 
-    public async postLoanProduct(path: string, body?: any) {
-        return this.stellare.post(path).set('Authorization', 'Bearer ' + this._userToken).send(body).expect(201);
+    public async submitLoanPurpose(body: any) {
+        return this.post(Helper.formatEndpoint(endpoints.stellare.saveLoanPurpose, {applicationId: this._loanApplicationId}), body);
     }
 
-    public async submitLoanPurpose(applicationId: string, body: any) {
-        return this.postLoanProduct(Helper.formatEndpoint(endpoints.stellare.saveLoanPurpose, {applicationId: applicationId}), body);
+    async getLoanQuote() {
+        return this.get(Helper.formatEndpoint(endpoints.stellare.quote, {applicationId: this._loanApplicationId}));
+    }
+
+    async submitLoanApplication(body: any) {
+        return this.patch(endpoints.stellare.application, body);
+    }
+
+    async getRepaymentDetails() {
+        return this.get(Helper.formatEndpoint(endpoints.stellare.repaymentDetail, {applicationId: this._loanApplicationId}));
+    }
+
+    async submitRepaymentDetails(repaymentPayload: any) {
+        return this.post(Helper.formatEndpoint(endpoints.stellare.payment, {applicationId: this._loanApplicationId}), repaymentPayload);
+    }
+
+    async acceptLoanAgreement() {
+        return this.put(Helper.formatEndpoint(endpoints.stellare.acceptGeneralLoanAgreement, {applicationId: this._loanApplicationId}));
+    }
+
+    async acceptLoanDisclosure() {
+        return this.put(Helper.formatEndpoint(endpoints.stellare.acceptLoanDisclosure, {applicationId: this._loanApplicationId}));
+    }
+
+    async getApplicationStatus(email: string) {
+        return this.post(endpoints.stellare.applicationStatus, {email: email}, 200);
     }
 }

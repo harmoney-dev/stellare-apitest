@@ -48,14 +48,14 @@ export class Income {
         let payload: any = {
             networthSourceId: networth,
             declaredAmount: parseInt(amount),
-            frequency: frequency,
+            frequency: frequency == '' ? null : frequency,
         }
 
         switch (networth) {
             case NetworthSource.keyIdMap['INCOME_SALARY_WAGES_ID']:
                 payload.employmentType = info.replaceAll(' ', '_');
                 payload.seasonalWorkingMonths = '';
-                payload.employmentCode = "professional";
+                payload.employmentCode = "OFFICE";
                 payload.employmentStartDate = "2004-12-31T11:00:00.000Z";
                 payload.startEmploymentMonth = "01";
                 payload.startEmploymentYear = "2005";
@@ -70,6 +70,9 @@ export class Income {
             case NetworthSource.keyIdMap['INCOME_CHANGE_ID']:
                 payload.increaseDecreaseChangeValue = info;
                 payload.expectIncreaseDecreaseChange = true;
+                break;
+            case NetworthSource.keyIdMap['INCOME_PARTNER_ID']:
+                payload.hasPartnerIncome = info === 'true';
                 break;
         }
 

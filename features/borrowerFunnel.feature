@@ -9,22 +9,24 @@ Feature: As a tester, I want to test the borrower funnel is working as expected
     Then The user task "username" completed successfully
     When I submit loan amount with following details
       | amount | residencyStatus |
-      | 20000  | yes             |
+      | 2000  | yes             |
     Then The user task "loan-amount" completed successfully
     When I submit loan purpose with purpose "Education"
     Then The user task "loan-purpose" completed successfully
-    When I start the user task idv-welcome
+    When I submit the mobile number with number "unique"
+    Then The user task "collect-user-phone-number" completed successfully
+    When I start the idv process
     And I submit the IDV user info with details
-      | firstName | lastName | DOB        | driverLicence | docNumber  | address                          |
-      | Jason     | Carlow   | 1952-01-05 | 11111111      | 1111111111 | 74 Langdon Street, Cleveland QLD |
+      | firstName | lastName | DOB   | driverLicence | docNumber | address                          |
+      | faker     | faker    | faker | faker         | faker     | 74 Langdon Street, Cleveland QLD |
     Then The user task "idv-frankie-smart-ui" completed successfully
     When I submit the user household with following details
-      | residentialStatus | expense rent | mortgage | dependants | relationshipStatus | expense child support | income child support | school fees | child care | expense change      |
-      | renting           | 200-monthly  |          | 2          | MARRIED            | 300-monthly           | 200-weekly           |             |            | 50-monthly-increase |
+      | residentialStatus | expense rent | mortgage | dependants | relationshipStatus | expense child support | income child support | school fees | child care | expense change |
+      | renting           | 200-monthly  |          | 2          | MARRIED            | 300-monthly           | 200-weekly           |             |            |                |
     Then The user task "household" completed successfully
     When I submit the user income with income details
-      | income salary           | income self employed | income benefit  | income rent    | income change        |
-      | 20000-monthly-full time |                      | 2024.38-monthly | 200-monthly-no | 100-monthly-increase |
+      | income salary           | income self employed | income benefit                  | income rent    | income change        | income partner |
+      | 14500-monthly-full time |                      | 200-monthly-Sole Parent Support | 200-monthly-no | 100-monthly-increase | 0--false       |
     Then The user task "income" completed successfully
     When I submit the living expense with expense details
       | expense utilities | expense groceries | expense transport | expense insurance | expense medical | expense child care | expense other | expense change |
@@ -32,7 +34,7 @@ Feature: As a tester, I want to test the borrower funnel is working as expected
     Then The user task "living-expense" completed successfully
     When I submit the Proviso with following bank details
       | bank           | username         | password |
-      | bank of custom | TestBank6738Yk7t | PYLvnsDY |
+      | bank of custom | TestBank6876bhkb | CJbb0IzL |
     Then The user task "connect-bank" completed successfully
     When I wait for user task load-bank-statement to complete
     And I submit the asset with following details
@@ -48,4 +50,11 @@ Feature: As a tester, I want to test the borrower funnel is working as expected
       | liability  buy  now  pay  later |                 |             |          |               |             |                    |                  |
     Then The user task "debt" completed successfully
     When I submit the user task financial-summary
-    Then I can check the application result
+    Then I can check the application status
+    When I submit user task loan-quote with loan amount "max" and term "7"
+    Then I can get the repayment details
+    When I choose repayment frequency "weekly" and the next "10" days as the start date
+    Then The user task "verify-email" completed successfully
+    Then The user task "fulfilment" completed successfully
+    And The user task "loan-disbursing" completed successfully
+    Then I can do the final check on application status

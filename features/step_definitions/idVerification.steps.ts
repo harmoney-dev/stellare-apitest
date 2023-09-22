@@ -6,7 +6,8 @@ import {IdvInit} from "../../support/payloads/idvInit";
 
 let idv: IDV;
 
-When('I start the user task idv-welcome', async function () {
+// When('I start the user task idv-welcome', async function () {
+When('I start the idv process', async function () {
     idv = new IDV(this.servers.stellare);
     const f1Token = await idv.connectToF1(this.userToken, this.userId, ConfigManager.country);
     idv = new IDV(this.servers.frankieOne);

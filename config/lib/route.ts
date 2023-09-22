@@ -3,6 +3,7 @@ export const routeMap: {[key: string]: string} = {
     "user task loan-purpose": "user-task-collect-loan-purpose",
     "user task loan-amount": "user-task-collect-loan-amount",
     "user task save-progress": "user-task-sign-up",
+    "user task collect-user-phone-number": "user-task-collect-user-phone-number",
     "user task idv-welcome": "user-task-identity-welcome",
     "user task idv-frankie-smart-ui": "user-task-identity-information",
     "user task income": "user-task-income",
@@ -17,5 +18,9 @@ export const routeMap: {[key: string]: string} = {
     "user task check-profile": "user-task-check-profile",
     "user task email-verification": "user-task-verify-email",
     "user task payment": "user-task-payment",
-    "user task contract": "user-task-sign-contract"
+    "user task contract": "user-task-sign-contract",
+    "user task loan-quote": "user-task-affordability-approved",
+    "user task verify-email": "user-task-verify-email",
+    "user task fulfilment": "user-task-loan-doc-wizard",
+    "user task loan-disbursing": "user-task-money-disbursing"
 }

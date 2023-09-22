@@ -18,4 +18,16 @@ export class Helper {
     public static  equalsIgnoreCase(str1: string, str2: string): boolean {
         return str1.toLowerCase() === str2.toLowerCase();
     }
+
+    public static getDateAfter(days: number) {
+        const today = new Date();
+        const afterDays = new Date(today);
+        afterDays.setDate(today.getDate() + days);
+
+        // Set the time to the last millisecond of the day
+        afterDays.setHours(23, 59, 59, 999);
+
+        // Format the date to ISO string
+        return afterDays.toISOString();
+    }
 }

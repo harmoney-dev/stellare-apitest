@@ -33,11 +33,11 @@ AfterStep(async function (testCase) {
             expect(taskName).equal(this.currentTaskName);
             let variable = {"variables":"{}"};
             if (taskName == 'user-task-identity-information') {
-                variable = {"variables":"{\"verificationStatus\":\"success\",\"applicationStatus\":null}"};
+                variable = {"variables":"{\"verificationStatus\":\"success\",\"applicationStatus\":\"quote_in_progress\"}"};
             }
             await task.completeTask(this.currentTaskId, this.userToken, variable);
             await Helper.delay(1000);
-            const taskInfo = await task.waitTaskActive(this.userId, this.journeyId);
+            const taskInfo = await task.waitTaskActive(this.userId, this.journeyId, taskName);
             this.currentTaskName = taskInfo.body.taskDefinitionId;
             this.currentTaskId = taskInfo.body.id;
         }

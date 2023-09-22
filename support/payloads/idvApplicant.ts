@@ -2,12 +2,14 @@ import {DataTable} from "@cucumber/cucumber";
 import {faker} from "@faker-js/faker";
 import {IDV} from "../components/idv";
 
-
 export class IdvApplicant {
     static async getApplicantPayload(idv: IDV, userId: string, data: DataTable) {
         const idvData = data.hashes()[0];
         const firstName = idvData["firstName"] === 'faker' ? faker.person.firstName() : idvData["firstName"];
         const lastName = idvData["lastName"] === 'faker' ? faker.person.lastName() : idvData["lastName"];
+        const idNumber = idvData["driverLicence"] === 'faker' ? faker.helpers.rangeToNumber({ min: 10000000, max: 99999999 }).toString() : idvData["driverLicence"];
+        const docNumber = idvData["docNumber"] === 'faker' ? faker.helpers.rangeToNumber({ min: 1000000000, max: 9999999999 }).toString() : idvData["docNumber"];
+        const dob = idvData["DOB"] === 'faker' ? faker.date.birthdate({ min: 18, max: 65, mode: 'age' }).toISOString().split('T')[0] : idvData["DOB"];
         const searchResult = await idv.getAddress(idvData["address"]);
         const addressValue = searchResult.body[0].value;
         const form = (await idv.getFormAddress(searchResult.headers.token, addressValue)).body;
@@ -24,7 +26,7 @@ export class IdvApplicant {
                             familyName: lastName,
                             displayName: null
                         },
-                    dateOfBirth: idvData["DOB"],
+                    dateOfBirth: dob,
                     gender: null,
                     extraData:
                         {},
@@ -97,12 +99,12 @@ export class IdvApplicant {
                             },
                         region: form.state,
                         country: "AUS",
-                        idNumber: idvData["driverLicence"],
+                        idNumber: idNumber,
                         gender: null,
                         extraData: {
                             "widget-index": 0,
                             digital_licence: false,
-                            document_number: idvData["docNumber"]
+                            document_number: docNumber
                         },
                         validation:
                             {

@@ -1,28 +1,16 @@
 import {Helper} from "../../utils/helper";
 import {endpoints} from "../../config";
 import supertest from "supertest";
+import {Server} from "./server";
 
-export class Task {
-
-    private stellare: supertest.SuperTest<supertest.Test>
-    private _token: string = '';
-
+export class Task extends Server{
 
     constructor(stellare: supertest.SuperTest<supertest.Test>, token: string) {
-        this.stellare = stellare;
-        this._token = token;
-    }
-
-    private async getTask(path: string, status: number = 200, body?: any) {
-        return this.stellare.get(path).set('Authorization', 'Bearer ' + this._token).send(body).expect(status);
-    }
-
-    private async postTask(path: string, status: number = 201, body?: any) {
-        return this.stellare.post(path).set('Authorization', 'Bearer ' + this._token).send(body).expect(status);
+        super(stellare, token);
     }
 
     public async kickoffJourney(userId: string) {
-        const product = await this.queryTask(endpoints.stellare.product, {branch: 'AU'})
+        const product = await this.query(endpoints.stellare.product, {branch: 'AU'})
         let processId = '';
         let productId = '';
 
@@ -37,20 +25,22 @@ export class Task {
                 }
             });
         }
-        const res = await this.getTask(Helper.formatEndpoint(endpoints.stellare.processes, { processId: processId }))
+        const res = await this.get(Helper.formatEndpoint(endpoints.stellare.processes, { processId: processId }))
         const journeyId = res.body.id;
         const userInstanceBody = {userId: userId, productId: productId};
-        await this.postTask(endpoints.stellare.userInstance, 201, userInstanceBody);
+        await this.post(endpoints.stellare.userInstance, userInstanceBody);
 
         return { journeyId: journeyId, productId: productId };
     }
 
     public async getTaskVariable(taskId: string) {
-        return this.getTask(Helper.formatEndpoint(endpoints.stellare.taskVariables, {taskId: taskId}));
+        return this.get(Helper.formatEndpoint(endpoints.stellare.taskVariables, {taskId: taskId}));
     }
 
-    public async waitTaskActive(userId: string, journeyId: any) {
+    public async waitTaskActive(userId: string, journeyId: any, taskName: string) {
         let res = await this.getCurrentTask(userId, journeyId);
+        if (taskName === 'user-task-money-disbursing') return res;
+
         let status = res.status;
         for (let i = 0; i < 60; i++) {
             if (status == 404) {
@@ -66,15 +56,10 @@ export class Task {
     }
 
     public async completeTask(taskId: string, token: string, variables: any) {
-        return this.stellare.patch(Helper.formatEndpoint(endpoints.stellare.tasks, {taskId: taskId}))
-            .set('Authorization', 'Bearer ' + token).send(variables).expect(200);
+        return this.patch(Helper.formatEndpoint(endpoints.stellare.tasks, {taskId: taskId}), variables);
     }
 
     public async getCurrentTask(userId: string, journeyId: any) {
-        return this.queryTask(endpoints.stellare.currentTask,  {userId: userId, journeyId: journeyId});
-    }
-
-    private async queryTask(path: string, query?: any) {
-        return this.stellare.get(path).set('Authorization', 'Bearer ' + this._token).query(query);
+        return this.queryWithoutCheck(endpoints.stellare.currentTask,  {userId: userId, journeyId: journeyId});
     }
 }
