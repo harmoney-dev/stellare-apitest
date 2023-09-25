@@ -9,7 +9,7 @@ Feature: As a tester, I want to test the borrower funnel is working as expected
     Then The user task "username" completed successfully
     When I submit loan amount with following details
       | amount | residencyStatus |
-      | 2000  | yes             |
+      | 2000   | yes             |
     Then The user task "loan-amount" completed successfully
     When I submit loan purpose with purpose "Education"
     Then The user task "loan-purpose" completed successfully
@@ -17,8 +17,8 @@ Feature: As a tester, I want to test the borrower funnel is working as expected
     Then The user task "collect-user-phone-number" completed successfully
     When I start the idv process
     And I submit the IDV user info with details
-      | firstName | lastName | DOB   | driverLicence | docNumber | address                          |
-      | faker     | faker    | faker | faker         | faker     | 74 Langdon Street, Cleveland QLD |
+      | firstName | lastName | DOB   | driverLicence | docNumber | address                          | idType          |
+      | faker     | faker    | faker | faker         | faker     | 74 Langdon Street, Cleveland QLD | DRIVERS_LICENCE |
     Then The user task "idv-frankie-smart-ui" completed successfully
     When I submit the user household with following details
       | residentialStatus | expense rent | mortgage | dependants | relationshipStatus | expense child support | income child support | school fees | child care | expense change |

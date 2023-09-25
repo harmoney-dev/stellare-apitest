@@ -1,6 +1,7 @@
 import {DataTable} from "@cucumber/cucumber";
 import {faker} from "@faker-js/faker";
 import {IDV} from "../components/idv";
+import {Helper} from "../../utils/helper";
 
 export class IdvApplicant {
     static async getApplicantPayload(idv: IDV, userId: string, data: DataTable) {
@@ -13,6 +14,10 @@ export class IdvApplicant {
         const searchResult = await idv.getAddress(idvData["address"]);
         const addressValue = searchResult.body[0].value;
         const form = (await idv.getFormAddress(searchResult.headers.token, addressValue)).body;
+        let idExpiryDate = null;
+        if (idvData["idType"] === 'PASSPORT') {
+            idExpiryDate = Helper.getDateAfter(365).split('T')[0];
+        }
 
         return {
             applicant:
@@ -118,8 +123,8 @@ export class IdvApplicant {
                                         isValid: null
                                     }
                             },
-                        idType: "DRIVERS_LICENCE",
-                        idExpiry: null,
+                        idType: idvData["idType"].toString().toUpperCase().replace(' ', '_'),
+                        idExpiry: idExpiryDate,
                         ocrResult:
                             {}
                     }
