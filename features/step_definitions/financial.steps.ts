@@ -23,21 +23,12 @@ When('I submit the living expense with expense details', async function (table: 
 })
 
 When('I submit the user household with following details', async function (table: DataTable) {
-
-
     user = new User(this!.servers.stellare, this!.userToken);
     //Update dependent in user profile
     const dependants = table.hashes()[0]['dependants'];
     const relationshipStatus = table.hashes()[0]['relationshipStatus'];
-    let userProfileData;
-    try {
-        userProfileData = (await user.getUserProfile('customer')).body;
-    } catch (e) {
-        //wait for user profile updated in slow network
-        await Helper.delay(5000);
-    }
-    if (userProfileData == null)
-        userProfileData = (await user.getUserProfile('customer')).body;
+    let userProfileData = (await user.getUserProfile('customer')).body;
+
     userProfileData.numberOfDependants = parseInt(dependants);
     userProfileData.relationshipStatus = relationshipStatus.toUpperCase();
     userProfileData.name = {
@@ -48,7 +39,10 @@ When('I submit the user household with following details', async function (table
     await user.updateUserProfile(this.userId, userProfileData);
 
     //update residential status in user address
-    const addressData = userProfileData.addresses.find((item: any) => item.isCurrent === true);
+    await Helper.delay(3000);
+    userProfileData = (await user.getUserProfile('customer')).body;
+    const addressData = userProfileData.addresses.find((item: any) => item.isCurrent === true)
+
     addressData.residentialStatus = table.hashes()[0]['residentialStatus'];
     await user.updateUserAddress(addressData);
 
@@ -115,7 +109,7 @@ Then('I can check the application status', async function () {
     let accountStatus: any = [];
     for (const item of declineMetric) {
         if (item.applicationStatus === 'quote_unsuccessful' ||
-        item.applicationStatus.toLowerCase().includes('failed') ) {
+            item.applicationStatus.toLowerCase().includes('failed')) {
             accountStatus.push(item);
         }
     }
