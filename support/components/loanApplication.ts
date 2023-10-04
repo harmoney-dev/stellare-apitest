@@ -42,4 +42,8 @@ export class LoanApplication extends Server{
     async getApplicationStatus(email: string) {
         return this.post(endpoints.stellare.applicationStatus, {email: email}, 200);
     }
+
+    async checkEmailVerifyStatus() {
+        return this.get(endpoints.stellare.emailVerifyStatus)
+    }
 }

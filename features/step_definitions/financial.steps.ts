@@ -28,6 +28,12 @@ When('I submit the user household with following details', async function (table
     const dependants = table.hashes()[0]['dependants'];
     const relationshipStatus = table.hashes()[0]['relationshipStatus'];
     let userProfileData = (await user.getUserProfile('customer')).body;
+    let retry = 0;
+    while (userProfileData.firstName === undefined && retry < 5) {
+        await Helper.delay(3000);
+        retry++;
+        userProfileData = (await user.getUserProfile('customer')).body;
+    }
 
     userProfileData.numberOfDependants = parseInt(dependants);
     userProfileData.relationshipStatus = relationshipStatus.toUpperCase();

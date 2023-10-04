@@ -34,7 +34,8 @@ export const endpoints = {
         userProfile: '/api/user-profile/{userId}',
         address: '/api/user-profile/address/{address}',
         emailVerification: '/qa-utils/api/update-email-verification',
-        applicationStatus: '/qa-utils/api/fetch-loan-application-info'
+        applicationStatus: '/qa-utils/api/fetch-loan-application-info',
+        emailVerifyStatus: '/api/emails/trigger-verification'
     },
     frankieOne: {
         tokenValidity: '/data/v2/token-validity',

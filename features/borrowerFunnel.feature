@@ -17,8 +17,8 @@ Feature: As a tester, I want to test the borrower funnel is working as expected
     Then The user task "collect-user-phone-number" completed successfully
     When I start the idv process
     And I submit the IDV user info with details
-      | firstName | lastName | DOB   | driverLicence | docNumber | address                          | idType          |
-      | faker     | faker    | faker | faker         | faker     | 74 Langdon Street, Cleveland QLD | DRIVERS_LICENCE |
+      | firstName | lastName | DOB   | driverLicence | docNumber | address | idType          |
+      | faker     | faker    | faker | faker         | faker     | faker   | DRIVERS_LICENCE |
     Then The user task "idv-frankie-smart-ui" completed successfully
     When I submit the user household with following details
       | residentialStatus | expense rent | mortgage | dependants | relationshipStatus | expense child support | income child support | school fees | child care | expense change |
@@ -54,6 +54,7 @@ Feature: As a tester, I want to test the borrower funnel is working as expected
     When I submit user task loan-quote with loan amount "max" and term "7"
     Then I can get the repayment details
     When I choose repayment frequency "weekly" and the next "10" days as the start date
+    And I check the email verify status
     Then The user task "verify-email" completed successfully
     Then The user task "fulfilment" completed successfully
     And The user task "loan-disbursing" completed successfully

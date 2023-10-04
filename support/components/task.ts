@@ -42,7 +42,7 @@ export class Task extends Server{
         if (taskName === 'user-task-money-disbursing') return res;
 
         let status = res.status;
-        for (let i = 0; i < 60; i++) {
+        for (let i = 0; i < 120; i++) {
             if (status == 404) {
                 res = await this.getCurrentTask( userId, journeyId);
                 status = res.status;
@@ -56,7 +56,12 @@ export class Task extends Server{
     }
 
     public async completeTask(taskId: string, token: string, variables: any) {
-        return this.patch(Helper.formatEndpoint(endpoints.stellare.tasks, {taskId: taskId}), variables);
+        try {
+            return this.patch(Helper.formatEndpoint(endpoints.stellare.tasks, {taskId: taskId}), variables);
+        } catch (e) {
+            await Helper.delay(2000);
+            return this.patch(Helper.formatEndpoint(endpoints.stellare.tasks, {taskId: taskId}), variables);
+        }
     }
 
     public async getCurrentTask(userId: string, journeyId: any) {

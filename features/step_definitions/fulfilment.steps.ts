@@ -22,13 +22,15 @@ When('I choose repayment frequency {string} and the next {string} days as the st
     this.response = await loanApplication.acceptLoanDisclosure();
 });
 
+When('I check the email verify status', async function () {
+    await loanApplication.checkEmailVerifyStatus();
+});
+
 Then('I can get the repayment details', async function () {
     this.response = await loanApplication.getRepaymentDetails();
 });
 
-Then('I can do the final check on application status', async function () {
-    let applicationDetails = (await loanApplication.getApplicationStatus(this.email)).body;
-
+async function checkApplicationStatus(applicationDetails: any) {
     let instanceComplete = true;
     let transactionComplete = true;
 
@@ -45,10 +47,17 @@ Then('I can do the final check on application status', async function () {
             break;
         }
     }
-
-    if (!instanceComplete && !transactionComplete) {
-        await Helper.delay(5000);
+    return instanceComplete && transactionComplete;
+}
+Then('I can do the final check on application status', async function () {
+    let applicationDetails = (await loanApplication.getApplicationStatus(this.email)).body;
+    let applicationComplete = await checkApplicationStatus(applicationDetails);
+    let index = 0;
+    while (!applicationComplete && index < 10) {
+        await Helper.delay(3000);
+        index++;
         applicationDetails = (await loanApplication.getApplicationStatus(this.email)).body;
+        applicationComplete = await checkApplicationStatus(applicationDetails);
     }
 
     expect(applicationDetails.creditCheckStatus.toLowerCase()).to.equal('passed');
