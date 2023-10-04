@@ -3,13 +3,13 @@ Feature: As a tester, I want to test the borrower funnel is working as expected
   @e2e
   Scenario: borrower funnel
     Given The Stellare "AU" is up and running
-    When I sign up with email "svc.qauser@harmoney.co.nz"
+    When I sign up with email "cicd.harmoney@gmail.com"
     Then user sign up success
     When I submit username with name "faker"
     Then The user task "username" completed successfully
     When I submit loan amount with following details
       | amount | residencyStatus |
-      | 2000   | yes             |
+      | 8000   | yes             |
     Then The user task "loan-amount" completed successfully
     When I submit loan purpose with purpose "Education"
     Then The user task "loan-purpose" completed successfully
