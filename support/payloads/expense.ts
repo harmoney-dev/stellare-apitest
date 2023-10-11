@@ -54,7 +54,7 @@ export class Expense {
                 payload.householdExpenseChange = info;
                 break;
             case NetworthSource.keyIdMap['EXPENSE_CHILD_SUPPORT_ID']:
-                payload.deductedFromIncome = 'yes';
+                payload.deductedFromIncome = true;
                 break;
             case NetworthSource.keyIdMap['EXPENSE_OTHER_ID']:
                 payload.otherExpenseType = info;

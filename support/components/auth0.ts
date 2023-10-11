@@ -1,8 +1,9 @@
 import supertest from "supertest";
 import {SignUp} from "../payloads/signUp";
 import {endpoints} from "../../config";
+import {Server} from "./server";
 
-export class Auth0 {
+export class Auth0{
     private auth0: supertest.SuperTest<supertest.Test>;
     private signUp = new SignUp();
 

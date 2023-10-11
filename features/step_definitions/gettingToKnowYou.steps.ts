@@ -17,13 +17,15 @@ let loanApplication: LoanApplication;
 
 When('I submit username with name {string}', async function (name: string) {
     task = new Task(this!.servers.stellare, this!.userToken);
-    user = new User(this!.servers.stellare, this!.userToken);
+
     const journey = await task.kickoffJourney(this.userId);
     this.journeyId = journey.journeyId;
     this.productId = journey.productId;
-    const taskInfo = await task.waitTaskActive(this.userId, this.journeyId);
-    this.currentTaskName = taskInfo.body.taskDefinitionId;
-    this.currentTaskId = taskInfo.body.id;
+    const taskInfo = await task.waitTaskActive(this.userId, this.journeyId, this.currentTaskName);
+    this.currentTaskName = taskInfo?.body.taskDefinitionId;
+    this.currentTaskId = taskInfo?.body.id;
+
+    user = new User(this!.servers.stellare, this!.userToken);
     this.response = await user.saveUsername(name == 'faker' ? faker.person.firstName() : name);
 });
 
@@ -38,13 +40,14 @@ When('I submit loan amount with following details', async function(dataTable: Da
     }
     const taskVariables = await task.getTaskVariable(this.currentTaskId);
     this.applicationId = taskVariables.body.loanApplicationId;
-    const body = { id: this.applicationId, amount:parseInt(amount), residencyStatus:residencyStatus };
+    const body = { id: this.applicationId, requestedAmount:parseInt(amount), residencyStatus:residencyStatus };
     this.response = await user.saveLoanAmount(body);
+    await user.verifyEmail(this.email);
 });
 
 When('I submit loan purpose with purpose {string}', async function(purpose: string) {
     loanProduct = new LoanProduct(this!.servers.stellare, this!.userToken);
-    loanApplication = new LoanApplication(this!.servers.stellare, this!.userToken);
+    loanApplication = new LoanApplication(this!.servers.stellare, this!.userToken, this.applicationId);
     if (purpose === '' || purpose.toLowerCase() === 'random') {
         purpose = loanPurpose[Math.floor(Math.random() * loanPurpose.length)];
     }
@@ -62,7 +65,14 @@ When('I submit loan purpose with purpose {string}', async function(purpose: stri
         }
     }
     body = [{id: purposeDetail.id, answers: answers}];
-    this.response = await loanApplication.submitLoanPurpose(this.applicationId, body);
+    this.response = await loanApplication.submitLoanPurpose(body);
+});
+
+When('I submit the mobile number with number {string}', async function(mobileNumber: string) {
+    if (isNaN(Number(mobileNumber))) {
+        mobileNumber = '+' + Date.now();
+    }
+    this.response = await user.saveMobileNumber(mobileNumber);
 });
 
 Then('The user task {string} completed successfully', async function (taskName: string) {

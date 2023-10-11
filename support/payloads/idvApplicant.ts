@@ -1,16 +1,24 @@
 import {DataTable} from "@cucumber/cucumber";
 import {faker} from "@faker-js/faker";
 import {IDV} from "../components/idv";
-
+import {Helper} from "../../utils/helper";
 
 export class IdvApplicant {
     static async getApplicantPayload(idv: IDV, userId: string, data: DataTable) {
         const idvData = data.hashes()[0];
-        const firstName = idvData["firstName"] === 'faker' ? faker.person.firstName() : idvData["firstName"];
-        const lastName = idvData["lastName"] === 'faker' ? faker.person.lastName() : idvData["lastName"];
-        const searchResult = await idv.getAddress(idvData["address"]);
+        const firstName = idvData["firstName"] === 'faker' ? faker.person.firstName() + getRandomAlphabets() : idvData["firstName"];
+        const lastName = idvData["lastName"] === 'faker' ? faker.person.lastName() + getRandomAlphabets() : idvData["lastName"];
+        const idNumber = idvData["driverLicence"] === 'faker' ? faker.helpers.rangeToNumber({ min: 10000000, max: 99999999 }).toString() : idvData["driverLicence"];
+        const docNumber = idvData["docNumber"] === 'faker' ? faker.helpers.rangeToNumber({ min: 1000000000, max: 9999999999 }).toString() : idvData["docNumber"];
+        const dob = idvData["DOB"] === 'faker' ? faker.date.birthdate({ min: 18, max: 65, mode: 'age' }).toISOString().split('T')[0] : idvData["DOB"];
+        const address = idvData["address"] === 'faker' ? faker.helpers.rangeToNumber({ min: 1, max: 200 }).toString() : idvData["address"];
+        const searchResult = await idv.getAddress(address);
         const addressValue = searchResult.body[0].value;
         const form = (await idv.getFormAddress(searchResult.headers.token, addressValue)).body;
+        let idExpiryDate = null;
+        if (idvData["idType"].toUpperCase() === 'PASSPORT') {
+            idExpiryDate = Helper.getDateAfter(365).split('T')[0];
+        }
 
         return {
             applicant:
@@ -24,7 +32,7 @@ export class IdvApplicant {
                             familyName: lastName,
                             displayName: null
                         },
-                    dateOfBirth: idvData["DOB"],
+                    dateOfBirth: dob,
                     gender: null,
                     extraData:
                         {},
@@ -63,7 +71,7 @@ export class IdvApplicant {
                         },
                     profile:
                         {
-                            profileType: "auto",
+                            profileType: "safe_harbour_id_nodup",
                             kycMethod: "electronic",
                             countryAlpha3: "aus",
                             dob: null,
@@ -97,12 +105,12 @@ export class IdvApplicant {
                             },
                         region: form.state,
                         country: "AUS",
-                        idNumber: idvData["driverLicence"],
+                        idNumber: idNumber,
                         gender: null,
                         extraData: {
                             "widget-index": 0,
-                            digital_licence: false,
-                            document_number: idvData["docNumber"]
+                            digital_licence: null,
+                            document_number: docNumber
                         },
                         validation:
                             {
@@ -116,8 +124,8 @@ export class IdvApplicant {
                                         isValid: null
                                     }
                             },
-                        idType: "DRIVERS_LICENCE",
-                        idExpiry: null,
+                        idType: idvData["idType"].toString().toUpperCase().replace(' ', '_'),
+                        idExpiry: idExpiryDate,
                         ocrResult:
                             {}
                     }
@@ -126,6 +134,18 @@ export class IdvApplicant {
                 [],
             kycMethod: "electronic",
             consent: true
+        }
+
+        function getRandomAlphabets(): string {
+            const alphabet = 'abcdefghijklmnopqrstuvwxyz';
+            let result = '';
+
+            for (let i = 0; i < 6; i++) {
+                const randomIndex = Math.floor(Math.random() * alphabet.length);
+                result += alphabet[randomIndex];
+            }
+
+            return result;
         }
     }
 } 

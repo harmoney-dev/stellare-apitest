@@ -17,6 +17,13 @@ export const endpoints = {
         application: '/api/loan-applications',
         loanPurpose: '/api/loan-products/{productId}/loan-purposes',
         saveLoanPurpose: '/api/loan-applications/{applicationId}/loan-purposes',
+        quote: '/api/loan-applications/{applicationId}/quote',
+        repaymentDetail: '/api/loan-applications/{applicationId}/repayment-detail',
+        payment: '/api/loan-applications/{applicationId}/payment',
+        repaymentSchedule: '/api/loan-applications/{applicationId}/repayment-schedule',
+        acceptGeneralLoanAgreement: '/api/loan-agreement/{applicationId}/accept-general-loan-agreement',
+        acceptLoanDisclosure: '/api/loan-agreement/{applicationId}/accept-loan-disclosure',
+        loanAgreementDetails: '/api/loan-agreement/{applicationId}/details',
         idvStartSession: '/api/identity-verifications/machine-session',
         networthSources: '/api/financial-profile/networth-sources?kind={kind}', 
         income: '/api/financial-profile/incomes',
@@ -26,6 +33,9 @@ export const endpoints = {
         bankConfig: '/api/bank-statement/configuration',
         userProfile: '/api/user-profile/{userId}',
         address: '/api/user-profile/address/{address}',
+        emailVerification: '/qa-utils/api/update-email-verification',
+        applicationStatus: '/qa-utils/api/fetch-loan-application-info',
+        emailVerifyStatus: '/api/emails/trigger-verification'
     },
     frankieOne: {
         tokenValidity: '/data/v2/token-validity',

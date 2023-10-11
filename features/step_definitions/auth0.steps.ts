@@ -46,7 +46,8 @@ Then('user sign in success', async function () {
 
 async function postUserAfterAuth0(stellare: supertest.SuperTest<supertest.Test>, userToken: string, email: string) {
     const user = new User(stellare, userToken);
-    const res = await user.postUser(endpoints.stellare.users);
+    // const res = await user.postUser(endpoints.stellare.users);
+    const res = await user.initUser();
     expect(res.body.id).not.equal('');
     expect(res.body.email).equal(email);
     return res.body.id;

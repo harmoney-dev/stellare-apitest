@@ -31,22 +31,36 @@ export class IDV {
 
     public async initSmartUI(f1SessionId: string, customerId: string, events: Array<string>, initBody: any) {
         await this.f1Post(endpoints.frankieOne.event, initBody, 204);
-        let body = {}
         for (const item of events) {
-            body = {
-                name: item,
-                timeStamp: (new Date()).toISOString(),
-                data: {},
-                customerId: customerId,
-                sessionId: f1SessionId,
-                channel: "smart-ui",
-                version: "v4.11.1",
-                deviceType: "mobile",
-                browser: "chrome"
-            }
-            await this.f1Post(endpoints.frankieOne.event, body, 204);
-            await Helper.delay(500);
+            await this.smartUIEvent(f1SessionId, customerId, item);
         }
+    }
+
+    async completeEvent(f1SessionId: string, customerId: string, entityId: string, completeEvents: Array<string>) {
+        let data = {};
+
+        for (const event of completeEvents) {
+            if (event === 'SUBMIT:RUN_CHECK')
+                data = { entityId: entityId, "maxAttemptCount": 3,"attemptCount": 1};
+
+            await this.smartUIEvent(f1SessionId, customerId, event, data);
+        }
+    }
+
+    async smartUIEvent(f1SessionId: string, customerId: string, eventName: string, data={}) {
+        const body = {
+            name: eventName,
+            timeStamp: (new Date()).toISOString(),
+            data: data,
+            customerId: customerId,
+            sessionId: f1SessionId,
+            channel: "smart-ui",
+            version: "v4.11.1",
+            deviceType: "mobile",
+            browser: "chrome"
+        }
+        await this.f1Post(endpoints.frankieOne.event, body, 204);
+        await Helper.delay(500);
     }
 
     public async submitApplicant(body: any) {
@@ -54,7 +68,7 @@ export class IDV {
     }
 
     public async getAddress(address: string) {
-        return this.f1Get(endpoints.frankieOne.address, {
+        return this.f1Query(endpoints.frankieOne.address, {
             searchTerm: address.replace(' ', '+'),
             'regions[]': 'AUS',
             apikey: 'AIzaSyCypGiHWEMyvlmuQyO0kzOmwDehIBGSk_A'
@@ -63,7 +77,7 @@ export class IDV {
 
     public async getFormAddress(f1Token: string, value: string) {
         this.f1Token = f1Token;
-        return this.f1Get(Helper.formatEndpoint(endpoints.frankieOne.formAddress, {addressValue: value}), {apikey: 'AIzaSyCypGiHWEMyvlmuQyO0kzOmwDehIBGSk_A'});
+        return this.f1Query(Helper.formatEndpoint(endpoints.frankieOne.formAddress, {addressValue: value}), {apikey: 'AIzaSyCypGiHWEMyvlmuQyO0kzOmwDehIBGSk_A'});
     }
 
     public async getApplicant(entityId: string, f1Token: string) {
@@ -75,7 +89,14 @@ export class IDV {
         return this.f1Post(Helper.formatEndpoint(endpoints.frankieOne.checkApplicant, {entityId: entityId}), {deviceCheckDetails: {}});
     }
 
-    private async f1Get(path: string, query?: any) {
+    private async f1Get(path: string) {
+        const headers = {'Authorization': this.f1Token, 'Referer': 'https://secure.harmoneylabs.com/'};
+        return this.server.get(path)
+            .set(headers)
+            .expect(200);
+    }
+
+    private async f1Query(path: string, query?: any) {
         const headers = {'Authorization': this.f1Token, 'Referer': 'https://secure.harmoneylabs.com/'};
         return this.server.get(path)
             .set(headers)
