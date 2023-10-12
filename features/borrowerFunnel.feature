@@ -7,12 +7,13 @@ Feature: As a tester, I want to test the borrower funnel is working as expected
     Then user sign up success
     When I submit username with name "faker"
     Then The user task "username" completed successfully
-    When I submit loan amount with following details
-      | amount | residencyStatus |
-      | 8000   | yes             |
-    Then The user task "loan-amount" completed successfully
-    When I submit loan purpose with purpose "Education"
+    And I get the loan application ID
+    When I submit loan purpose with purpose "Holiday"
+    And I submit loan amount as much as "6000"
     Then The user task "loan-purpose" completed successfully
+    When I submit residency status with status "AU_CITIZEN_OR_PERMANENT_RESIDENT"
+    And I submit relationship status with status "random"
+    Then The user task "get-to-know-you" completed successfully
     When I submit the mobile number with number "unique"
     Then The user task "collect-user-phone-number" completed successfully
     When I start the idv process

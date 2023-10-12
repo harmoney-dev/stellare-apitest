@@ -30,4 +30,10 @@ export class Helper {
         // Format the date to ISO string
         return afterDays.toISOString();
     }
+
+    public static getRandomEnumValue(anEnum: any): string {
+        const enumKeys = Object.keys(anEnum);
+        const randomKey = enumKeys[Math.floor(Math.random() * enumKeys.length)];
+        return anEnum[randomKey];
+    }
 }
