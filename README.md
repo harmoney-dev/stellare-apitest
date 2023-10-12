@@ -18,6 +18,12 @@ We are using `ts-node` to run the TypeScript code. You can run the tests with th
 npx cucumber-js
 ```
 
+Or you can directly run
+```
+npm run e2e:test
+```
+to include all of the test case tagged with @e2e
+
 ## Dependencies
 
 This project uses several libraries for testing:

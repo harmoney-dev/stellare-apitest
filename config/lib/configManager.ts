@@ -5,6 +5,7 @@ interface Configs {
     country: COUNTRY_TYPES;
     env: ENV_TYPES;
     baseURL: baseURL;
+    defaultPassword: string;
 }
 
 class ConfigManager {
@@ -16,6 +17,7 @@ class ConfigManager {
             country: this.country.toUpperCase() as COUNTRY_TYPES,
             env: this.env.toUpperCase() as ENV_TYPES,
             baseURL: this.resolveConfig<baseURL>(this.country, this.env, baseURLValues),
+            defaultPassword: 'Stellare123.',
         };
     }
 

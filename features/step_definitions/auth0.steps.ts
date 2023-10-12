@@ -31,7 +31,7 @@ When('I sign up with email {string}', async function (email: string) {
 When('I sign in with email {string} and password {string}', async function (email: string, password: string) {
     auth0 = new Auth0(this.servers.auth0);
     this.email = email;
-    this.userToken = await auth0.signIn(email, password);
+    this.userToken = await auth0.signIn(email, this.config.defaultPassword);
 });
 
 Then('user sign up success', async function () {
