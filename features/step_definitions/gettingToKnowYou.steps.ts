@@ -1,4 +1,4 @@
-import {DataTable, Then, When} from "@cucumber/cucumber";
+import {Then, When} from "@cucumber/cucumber";
 import {Task} from "../../support/components/task";
 import {User} from "../../support/components/user"
 import {expect} from "chai";
@@ -7,8 +7,7 @@ import {LoanProduct} from "../../support/components/loanProduct";
 import {Helper} from "../../utils/helper";
 import {loanPurpose} from "../../config";
 import {LoanApplication} from "../../support/components/loanApplication";
-import {ResidencyStatus} from "../../config";
-import Environment from "../../config/environment/environment";
+import {singleRelationshipStatus} from "../../config/lib/relationshipStatus.enum"
 
 let task: Task;
 let user: User;
@@ -29,20 +28,29 @@ When('I submit username with name {string}', async function (name: string) {
     this.response = await user.saveUsername(name == 'faker' ? faker.person.firstName() : name);
 });
 
-When('I submit loan amount with following details', async function(dataTable: DataTable) {
-    const loanData = dataTable.hashes()[0];
-    const amount = loanData['amount'];
-    let residencyStatus = loanData['residencyStatus'];
-    if (residencyStatus.toLowerCase() === 'no') {
-        residencyStatus = ResidencyStatus.NONE_CITIZEN_OR_PERMANENT_RESIDENT;
-    } else {
-        residencyStatus = Environment.isAU ? ResidencyStatus.AU_CITIZEN_OR_PERMANENT_RESIDENT : ResidencyStatus.NZ_CITIZEN_OR_PERMANENT_RESIDENT;
-    }
+Then('I get the loan application ID',async function(){
+    //Get the application id from the current task
     const taskVariables = await task.getTaskVariable(this.currentTaskId);
     this.applicationId = taskVariables.body.loanApplicationId;
-    const body = { id: this.applicationId, requestedAmount:parseInt(amount), residencyStatus:residencyStatus };
+});
+
+When('I submit loan amount as much as {string}', async function(amount: string) {
+    const loanAmount = Math.floor(Math.random() * (Number(amount) - 2000 + 1)) + 2000;
+    const body = { id: this.applicationId, requestedAmount: loanAmount};
     this.response = await user.saveLoanAmount(body);
+
     await user.verifyEmail(this.email);
+});
+
+When('I submit residency status with status {string}', async function(status: string) {
+    const body = { id: this.applicationId, residencyStatus: status };
+    this.response = await loanApplication.submitLoanApplication(body);
+});
+
+When('I submit relationship status with status {string}', async function(status: string) {
+    status = status === 'random' ? Helper.getRandomEnumValue(singleRelationshipStatus) : status;
+    const body = {relationshipStatus: status };
+    this.response = await user.updateUserProfile(this.userId, body);
 });
 
 When('I submit loan purpose with purpose {string}', async function(purpose: string) {

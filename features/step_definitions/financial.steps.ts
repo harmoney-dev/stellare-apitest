@@ -26,23 +26,15 @@ When('I submit the user household with following details', async function (table
     user = new User(this!.servers.stellare, this!.userToken);
     //Update dependent in user profile
     const dependants = table.hashes()[0]['dependants'];
-    const relationshipStatus = table.hashes()[0]['relationshipStatus'];
     let userProfileData = (await user.getUserProfile('customer')).body;
-    let retry = 0;
-    while (userProfileData.firstName === undefined && retry < 5) {
-        await Helper.delay(3000);
-        retry++;
-        userProfileData = (await user.getUserProfile('customer')).body;
-    }
+    // let retry = 0;
+    // while (userProfileData.firstName === undefined && retry < 5) {
+    //     await Helper.delay(3000);
+    //     retry++;
+    //     userProfileData = (await user.getUserProfile('customer')).body;
+    // }
 
-    userProfileData.numberOfDependants = parseInt(dependants);
-    userProfileData.relationshipStatus = relationshipStatus.toUpperCase();
-    userProfileData.name = {
-        givenName: userProfileData.firstName,
-        familyName: userProfileData.lastName,
-        middleName: userProfileData.middleName
-    };
-    await user.updateUserProfile(this.userId, userProfileData);
+    await user.updateUserProfile(this.userId, {numberOfDependants:parseInt(dependants)});
 
     //update residential status in user address
     await Helper.delay(3000);
